@@ -38,14 +38,14 @@ with unrecognized side value." Zero silent data loss.
 ## 2. Naive hour extraction ignores timezone offset
 
 **What/where:** hour was built with
-df["Timestamp"].astype(str).str.slice(11, 13) - this just grabs two
+df["Timestamp"].astype(str).str.slice(11, 13)``` - this just grabs two
 characters of raw text from the timestamp and ignores the +01:00/+00:00
 part at the end completely.
 
 **How confirmed:** Built the hour two different ways from the same raw
 Timestamp column: one by slicing text (the buggy way), one by properly
 parsing the full timestamp including its timezone offset with
-pd.to_datetime(df["Timestamp"], utc=True).dt.hour. Compared the two, row by
+```python pd.to_datetime(df["Timestamp"], utc=True).dt.hour. Compared the two, row by
 row. 608 of 2,975 rows landed in a different hour under the naive method
 than under the correct one.
 
@@ -77,8 +77,8 @@ the average further than a small one, and this function didn't do that.
 
 **Fix:**
 
-def _vwap(group: pd.DataFrame) -> float:
-    return (group["Price"] * group["Volume"]).sum() / group["Volume"].sum()
+```python def _vwap(group: pd.DataFrame) -> float:
+    return (group["Price"] * group["Volume"]).sum() / group["Volume"].sum()```
 
 **Known, deliberately unfixed risk:** if a group has zero rows (no trades
 on one side in a given hour), this becomes 0 divided by 0 - undefined, and
@@ -147,9 +147,9 @@ individual row's numbers are still correct on their own.
 **Fix:** Before writing, check which hours are already in the existing
 summary file, and only add the ones that aren't there yet:
 
-if os.path.exists(SUMMARY_PATH):
+```python if os.path.exists(SUMMARY_PATH):
     existing = pd.read_csv(SUMMARY_PATH)
-    summary = summary[~summary["hour"].astype(str).isin(existing["hour"].astype(str))]
+    summary = summary[~summary["hour"].astype(str).isin(existing["hour"].astype(str))]```
 
 This uses the summary file itself to know what's already been saved - no
 extra setup needed.
@@ -184,8 +184,8 @@ much data happens to be in the file when it runs.
 
 **Fix:** Group by the full date and hour together, not just hour-of-day:
 
-df["ts_parsed"] = pd.to_datetime(df["Timestamp"], utc=True)
-df["hour"] = df["ts_parsed"].dt.floor("h")
+```python df["ts_parsed"] = pd.to_datetime(df["Timestamp"], utc=True)
+df["hour"] = df["ts_parsed"].dt.floor("h") ```
 
 This one change also fixes #2 (naive hour extraction), since hour now
 comes from a properly read, timezone-aware timestamp.
