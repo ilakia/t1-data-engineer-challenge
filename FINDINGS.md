@@ -78,7 +78,7 @@ the average further than a small one, and this function didn't do that.
 **Fix:**
 
 ```python def _vwap(group: pd.DataFrame) -> float:
-    return (group["Price"] * group["Volume"]).sum() / group["Volume"].sum()```
+    return (group["Price"] * group["Volume"]).sum() / group["Volume"].sum() ```
 
 **Known, deliberately unfixed risk:** if a group has zero rows (no trades
 on one side in a given hour), this becomes 0 divided by 0 - undefined, and
