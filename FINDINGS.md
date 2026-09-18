@@ -38,14 +38,14 @@ with unrecognized side value." Zero silent data loss.
 ## 2. Naive hour extraction ignores timezone offset
 
 **What/where:** hour was built with
-df["Timestamp"].astype(str).str.slice(11, 13)``` - this just grabs two
+df["Timestamp"].astype(str).str.slice(11, 13) - this just grabs two
 characters of raw text from the timestamp and ignores the +01:00/+00:00
 part at the end completely.
 
 **How confirmed:** Built the hour two different ways from the same raw
 Timestamp column: one by slicing text (the buggy way), one by properly
 parsing the full timestamp including its timezone offset with
-```python pd.to_datetime(df["Timestamp"], utc=True).dt.hour. Compared the two, row by
+pd.to_datetime(df["Timestamp"], utc=True).dt.hour. Compared the two, row by
 row. 608 of 2,975 rows landed in a different hour under the naive method
 than under the correct one.
 
