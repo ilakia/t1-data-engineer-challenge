@@ -25,10 +25,12 @@ trades, with no warning.
 **Fix:** Lowercase Sell_Buy before comparing, instead of listing exact
 spellings, so any capitalization is caught:
 
-'''df["side"] = df["Sell_Buy"].str.lower()
+```python
+df["side"] = df["Sell_Buy"].str.lower()
 valid = df["side"].isin(["buy", "sell"])
 logger.info("Dropping %d rows with unrecognized side value", (~valid).sum())
-df = df[valid] '''
+df = df[valid]
+```
 
 **Verified after fix:** Re-ran in Airflow - log now reads "Dropping 0 rows
 with unrecognized side value." Zero silent data loss.
