@@ -148,9 +148,11 @@ individual row's numbers are still correct on their own.
 **Fix:** Before writing, check which hours are already in the existing
 summary file, and only add the ones that aren't there yet:
 
-```python if os.path.exists(SUMMARY_PATH):
+```python
+if os.path.exists(SUMMARY_PATH):
     existing = pd.read_csv(SUMMARY_PATH)
-    summary = summary[~summary["hour"].astype(str).isin(existing["hour"].astype(str))]```
+    summary = summary[~summary["hour"].astype(str).isin(existing["hour"].astype(str))]
+```
 
 This uses the summary file itself to know what's already been saved - no
 extra setup needed.
@@ -185,8 +187,10 @@ much data happens to be in the file when it runs.
 
 **Fix:** Group by the full date and hour together, not just hour-of-day:
 
-```python df["ts_parsed"] = pd.to_datetime(df["Timestamp"], utc=True)
-df["hour"] = df["ts_parsed"].dt.floor("h") ```
+```python
+df["ts_parsed"] = pd.to_datetime(df["Timestamp"], utc=True)
+df["hour"] = df["ts_parsed"].dt.floor("h")
+```
 
 This one change also fixes #2 (naive hour extraction), since hour now
 comes from a properly read, timezone-aware timestamp.
